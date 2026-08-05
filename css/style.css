@@ -367,6 +367,12 @@ a:focus-visible, button:focus-visible {
 .gallery-grid .tall { grid-row: span 2; }
 .gallery-grid .wide { grid-column: span 2; }
 
+/* Marka tescil belgesi — doküman olduğu için kırpılmadan tam görünsün */
+.gallery-grid a.belge img,
+.photo-strip a.belge img { object-fit: contain; background: #fff; }
+.gallery-grid a.belge:hover img,
+.photo-strip a.belge:hover img { transform: none; }
+
 /* ---------- Yorum / alıntı ---------- */
 .quote {
   background: var(--purple-deep); color: #fff; text-align: center; position: relative;
