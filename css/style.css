@@ -12,7 +12,7 @@
   --purple:    #6b4c8a;   /* ana lavanta moru */
   --purple-2:  #8e6bb0;   /* açık lavanta moru */
   --purple-deep:#3f2c56;  /* koyu mor (başlık/nav zemini) */
-  --gold:      #b6923f;   /* altın vurgu */
+  --gold:      #7a5e26;   /* altın vurgu (metin okunurluğu için koyultuldu, bkz. eyebrow/tag) */
   --gold-2:    #d4b26a;   /* açık altın */
   --text:      #2c2432;   /* koyu mürekkep */
   --muted:     #6c6273;   /* soluk gövde metni */
@@ -125,7 +125,8 @@ a:focus-visible, button:focus-visible {
 .announcement-bar {
   position: fixed; inset-block-start: 0; inset-inline: 0; z-index: 110;
   height: var(--announce-h);
-  background: linear-gradient(90deg, var(--purple), var(--purple-2));
+  /* purple-2 yerine biraz daha koyu bir ton: beyaz metin/link kontrastı gradyanın açık ucunda da AA eşiğini (4.5:1) geçsin */
+  background: linear-gradient(90deg, var(--purple), #775897);
   color: #fff;
 }
 .announcement-bar .container {
@@ -134,10 +135,10 @@ a:focus-visible, button:focus-visible {
 }
 .announcement-bar span { opacity: .95; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .announcement-bar a {
-  flex: none; color: var(--gold-2); font-weight: 700; text-decoration: underline;
+  flex: none; color: #fff; font-weight: 700; text-decoration: underline;
   text-underline-offset: 3px; white-space: nowrap;
 }
-.announcement-bar a:hover { color: #fff; }
+.announcement-bar a:hover { color: var(--gold-2); }
 
 /* ---------- Header ---------- */
 .site-header {
@@ -153,7 +154,7 @@ a:focus-visible, button:focus-visible {
 }
 .site-header .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 
-.brand { display: flex; align-items: center; gap: 10px; }
+.brand { display: flex; align-items: center; gap: 10px; position: relative; z-index: 2; }
 .brand img { width: 46px; height: 46px; border-radius: 50%; }
 .brand-name {
   font-family: var(--serif); font-weight: 600; font-size: 1.3rem;
@@ -177,7 +178,7 @@ a:focus-visible, button:focus-visible {
 }
 .main-nav a:hover::after { transform: scaleX(1); transform-origin: left; }
 
-.header-actions { display: flex; align-items: center; gap: 10px; }
+.header-actions { display: flex; align-items: center; gap: 10px; position: relative; z-index: 2; }
 
 .lang-toggle {
   display: flex; border: 1px solid rgba(255,255,255,.5); border-radius: 20px; overflow: hidden;
@@ -196,6 +197,10 @@ a:focus-visible, button:focus-visible {
   align-items: center; justify-content: center; color: #fff;
 }
 .site-header.is-solid .nav-toggle { color: var(--purple-deep); }
+.site-header.is-solid .header-actions .btn-outline {
+  border-color: var(--purple); color: var(--purple); background: transparent;
+}
+.site-header.is-solid .header-actions .btn-outline:hover { background: var(--purple); color: #fff; }
 
 /* ---------- Hero ---------- */
 .hero {
@@ -284,17 +289,39 @@ a:focus-visible, button:focus-visible {
 .features { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
 .feature-card {
   background: var(--bg-3); border: 1px solid var(--line); border-radius: var(--radius);
-  padding: 32px 24px; text-align: center; transition: transform .35s var(--ease), box-shadow .35s var(--ease);
+  padding: 32px 24px; text-align: center; overflow: hidden;
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s var(--ease);
 }
-.feature-card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(107,76,138,.14); }
+/* Kartın üstünde editoryal fotoğraf: negatif kenar boşluğuyla kart kenarlarına taşınır,
+   kartın overflow:hidden + border-radius'u sayesinde üst köşeler kartla tam uyumlu yuvarlanır */
+.feature-photo {
+  margin: -32px -24px 22px; aspect-ratio: 3 / 2; overflow: hidden; background: var(--bg-2);
+}
+.feature-photo img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform .5s var(--ease); will-change: transform;
+}
 .feature-icon {
   width: 56px; height: 56px; border-radius: 50%; background: var(--bg-2);
   display: flex; align-items: center; justify-content: center; margin: 0 auto 18px;
-  color: var(--purple);
+  color: var(--purple); transition: color .3s var(--ease);
 }
 .feature-icon svg { width: 26px; height: 26px; }
-.feature-card h3 { font-family: var(--serif); font-size: 1.25rem; font-weight: 600; color: var(--purple-deep); }
-.feature-card p { margin-top: 8px; font-size: .9rem; color: var(--muted); }
+.feature-card h3 { font-family: var(--serif); font-size: 1.25rem; font-weight: 600; color: var(--purple-deep); transition: color .3s var(--ease); }
+.feature-card p { margin-top: 8px; font-size: .9rem; color: var(--muted); transition: color .3s var(--ease); }
+
+/* Premium hover etkileşimleri — yalnızca gerçek imleçli (masaüstü) cihazlarda; mobilde çalışmaz */
+@media (hover: hover) and (pointer: fine) {
+  .feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 22px 48px rgba(107,76,138,.20), 0 0 26px rgba(142,107,176,.16);
+    border-color: rgba(142,107,176,.45);
+  }
+  .feature-card:hover .feature-photo img { transform: scale(1.05); }
+  .feature-card:hover .feature-icon { color: var(--purple-deep); }
+  .feature-card:hover h3 { color: var(--purple-deep); }
+  .feature-card:hover p { color: #4b4356; }
+}
 
 /* ---------- Ürünler ---------- */
 .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 3vw, 32px); }
@@ -370,17 +397,24 @@ a:focus-visible, button:focus-visible {
 
 /* ---------- Foto şerit (footer üstü) ---------- */
 .photo-strip {
-  display: flex; overflow-x: auto; scrollbar-width: thin;
-  background: var(--bg-2);
+  display: flex; gap: 12px; overflow-x: auto; scrollbar-width: thin;
+  background: var(--bg-2); padding: 16px var(--pad);
 }
 .photo-strip a {
-  flex: 1 0 140px; height: 168px; overflow: hidden; display: block;
+  flex: 0 0 clamp(150px, 18vw, 184px); aspect-ratio: 1 / 1;
+  overflow: hidden; display: block; border-radius: 14px;
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease);
 }
 .photo-strip img {
-  width: 100%; height: 100%; object-fit: cover; transition: transform .5s var(--ease), filter .5s var(--ease);
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform .3s var(--ease);
   filter: saturate(.94);
 }
-.photo-strip a:hover img { transform: scale(1.08); filter: saturate(1.05); }
+/* Premium hover — yalnızca gerçek imleçli cihazlarda */
+@media (hover: hover) and (pointer: fine) {
+  .photo-strip a:hover { box-shadow: 0 12px 30px rgba(107,76,138,.22); }
+  .photo-strip a:hover img { transform: scale(1.04); filter: saturate(1.02); }
+}
 
 /* ---------- Footer ---------- */
 .site-footer { background: #23172f; color: #cfc3d8; padding-block: 56px 26px; }

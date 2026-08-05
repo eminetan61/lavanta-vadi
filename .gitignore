@@ -1,2 +1,12 @@
 .DS_Store
 *.html.orig
+
+# Kök dizindeki artık indirme dosyaları (siteye dahil değil)
+/*.png
+/*.jpg
+/*.jpeg
+/indir*.html
+/deploy-index.html
+/(6) Pinterest.html
+/(6) Pinterest_files/
+/_ Lavender Fields ~ panosundaki Pin_files/

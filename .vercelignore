@@ -1,0 +1,11 @@
+# Yalnızca index.html + img/ css/ js/ yayınlansın.
+# Kök dizindeki artık indirme dosyaları (siteye dahil DEĞİL) deploy'a girmesin.
+/*.png
+/*.jpg
+/*.jpeg
+/indir*.html
+/(6) Pinterest.html
+/(6) Pinterest_files/
+/_ Lavender Fields ~ panosundaki Pin_files/
+/deploy-index.html
+.DS_Store
